@@ -1,7 +1,6 @@
 use axum::{extract::State, routing::get, Json, Router, Server};
 use std::sync::{Arc, Mutex};
 use sysinfo::{CpuExt, System, SystemExt};
-use tokio::time::{interval, Duration};
 use tower_http::services::ServeDir;
 
 #[tokio::main]
@@ -15,11 +14,9 @@ async fn main() {
     println!("Listening on http://{}", server.local_addr());
 
     // Spawn a background task to update CPU usage every 200ms
-    tokio::spawn(async move {
-        let mut interval = interval(Duration::from_millis(200));
+    tokio::task::spawn_blocking(move || {
         let mut sys = System::new_all();
         loop {
-            interval.tick().await;
             sys.refresh_cpu();
             let mut cpu_usage = app_state.cpu_usage.lock().unwrap();
             let new_cpu_usage: Vec<f32> = sys.cpus().iter().map(|cpu| cpu.cpu_usage()).collect();
@@ -27,6 +24,7 @@ async fn main() {
                 cpu_usage.resize(new_cpu_usage.len(), 0.0);
             }
             cpu_usage.clone_from_slice(&new_cpu_usage);
+            std::thread::sleep(std::time::Duration::from_millis(200));
         }
     });
 
