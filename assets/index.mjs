@@ -23,4 +23,4 @@ async function renderCpuUsage() {
     render(html`<${App} cpus=${data}></${App}>`, document.body);
 }
 
-setInterval(renderCpuUsage, 200);
+setInterval(renderCpuUsage, 500);
