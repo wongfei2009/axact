@@ -19,9 +19,16 @@ function App(props) {
 }
 
 async function renderCpuUsage() {
-    let response = await fetch("/api/cpu");
-    let data = await response.json();
-    render(html`<${App} cpus=${data}></${App}>`, document.body);
+    try {
+        let response = await fetch("/api/cpu");
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        let data = await response.json();
+        render(html`<${App} cpus=${data}></${App}>`, document.body);
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 setInterval(renderCpuUsage, 200);

@@ -13,7 +13,6 @@ async fn main() {
     let server = Server::bind(&"0.0.0.0:7032".parse().unwrap()).serve(router.into_make_service());
     println!("Listening on http://{}", server.local_addr());
 
-    // Spawn a background task to update CPU usage every 200ms
     tokio::task::spawn_blocking(move || {
         let mut sys = System::new_all();
         loop {
