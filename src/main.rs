@@ -1,12 +1,14 @@
 use axum::{extract::State, routing::get, Json, Router, Server};
 use std::sync::{Arc, Mutex};
 use sysinfo::{CpuExt, System, SystemExt};
+use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
     let sys = Arc::new(Mutex::new(System::new_all()));
     let app_state = AppState { sys };
     let router = Router::new()
+        .nest_service("/", ServeDir::new("assets"))
         .route("/api/cpu", get(cpu_info))
         .with_state(app_state);
     let server = Server::bind(&"0.0.0.0:7032".parse().unwrap()).serve(router.into_make_service());
