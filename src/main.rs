@@ -17,12 +17,15 @@ async fn main() {
         let mut sys = System::new_all();
         loop {
             sys.refresh_cpu();
-            let mut cpu_usage = app_state.cpu_usage.lock().unwrap();
-            let new_cpu_usage: Vec<f32> = sys.cpus().iter().map(|cpu| cpu.cpu_usage()).collect();
-            if cpu_usage.len() != new_cpu_usage.len() {
-                cpu_usage.resize(new_cpu_usage.len(), 0.0);
+            let new_cpu_usage: Vec<f32> =
+            sys.cpus().iter().map(|cpu| cpu.cpu_usage()).collect();
+            {
+                let mut cpu_usage = app_state.cpu_usage.lock().unwrap();
+                if cpu_usage.len() != new_cpu_usage.len() {
+                    cpu_usage.resize(new_cpu_usage.len(), 0.0);
+                }
+                cpu_usage.clone_from_slice(&new_cpu_usage);
             }
-            cpu_usage.clone_from_slice(&new_cpu_usage);
             std::thread::sleep(std::time::Duration::from_millis(200));
         }
     });
