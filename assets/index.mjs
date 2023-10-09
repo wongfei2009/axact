@@ -8,17 +8,19 @@ function App(props) {
     <div>
         ${props.cpus.map((cpu) => {
         return html`
-            <div>
-                <p>${cpu.toFixed(2)}%</p>
+            <div class="bar">
+                <div class="bar-inner" style="width: ${cpu}%"> ${cpu.toFixed(2)}%</div>
             </div>
             `;
     })}
-    </div>
+    </div>  
     `;
 }
 
-setInterval(async function () {
+async function renderCpuUsage() {
     let response = await fetch("/api/cpu");
     let data = await response.json();
     render(html`<${App} cpus=${data}></${App}>`, document.body);
-}, 1000);
+}
+
+setInterval(renderCpuUsage, 200);

@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+* {
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    background: #EDF6F9;
+}
+
+.bar {
+    background-color: #FFDDD2;
+    width: 20em;
+    height: 2em;
+    margin: 1em;
+    position: relative;
+}
+
+.bar .bar-inner {
+    background-color: #FF9B71;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
