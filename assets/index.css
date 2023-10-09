@@ -30,4 +30,5 @@ body {
     left: 0;
     top: 0;
     bottom: 0;
+    transition: width 0.1s;
 }
