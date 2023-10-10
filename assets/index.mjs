@@ -18,17 +18,8 @@ function App(props) {
     `;
 }
 
-async function renderCpuUsage() {
-    try {
-        let response = await fetch("/api/cpu");
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        let data = await response.json();
-        render(html`<${App} cpus=${data}></${App}>`, document.body);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-setInterval(renderCpuUsage, 200);
+const ws = new WebSocket(`ws://${window.location.host}/api/realtime-cpu`);
+ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    render(html`<${App} cpus=${data}></${App}>`, document.body);
+};
